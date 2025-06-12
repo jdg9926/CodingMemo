@@ -38,4 +38,30 @@ bash
 json-server --watch db.json --port 4000
 프론트에서 /classify POST 대신 GET으로 호출하거나, json-server 라우팅 리마핑 기능을 써서 POST도 받을 수 있어요.
 
+3. 간단한 Express 스텁 서버 만들기
+백엔드가 Express라면, 최소한의 “분류” 엔드포인트만 갖춘 스텁을 로컬에 빠르게 띄울 수 있습니다:
+
+bash
+mkdir stub-backend && cd stub-backend
+npm init -y
+npm install express cors
+
+js
+// stub-backend/index.js
+import express from 'express';
+import cors from 'cors';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.post('/classify', (req, res) => {
+    // 실제 분류 로직 대신 매번 같은 더미 반환
+    res.json({ emotion: 'happy', confidence: 0.95 });
+});
+app.listen(4000, () => console.log('Stub API running on http://localhost:4000'));
+
+bash
+# 실행
+node index.js
+이제 프론트에서는 proxy나 setupProxy.js를 통해 localhost:4000으로 연결하면 되고, 실제 백엔드 개발이 완료되면 로직만 바꾸면 됩니다.
 
